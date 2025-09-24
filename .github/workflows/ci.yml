@@ -25,11 +25,10 @@ jobs:
     - name: Build Spring Boot jar
       run: ./gradlew clean bootJar
 
-
     - name: Build and Push Docker Image
       uses: mr-smithers-excellent/docker-build-push@v4
       with:
-        image: ayachyibtyssem/springproject
+        image: ibtissem1234/sprinproject
         registry: docker.io
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
