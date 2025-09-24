@@ -44,3 +44,5 @@ out/
 *.bak
 *.swp
 
+.env
+
