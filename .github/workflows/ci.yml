@@ -9,7 +9,7 @@ on:
 jobs:
   build-java:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v2
 
@@ -24,6 +24,7 @@ jobs:
 
     - name: Build Spring Boot jar
       run: ./gradlew clean bootJar
+
 
     - name: Build and Push Docker Image
       uses: mr-smithers-excellent/docker-build-push@v4
