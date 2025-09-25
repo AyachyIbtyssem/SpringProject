@@ -43,7 +43,7 @@ jobs:
     - name: Set up kubeconfig
       run: |
         mkdir -p $HOME/.kube
-      run: echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
+        echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
 
     - name: Install kubectl
       uses: azure/setup-kubectl@v3
