@@ -7,8 +7,6 @@ on:
     branches: [ master ]
 
 jobs:
-
-  # test and build the Java application
   build-java:
     runs-on: ubuntu-latest
 
@@ -30,28 +28,25 @@ jobs:
     - name: Build Spring Boot jar
       run: ./gradlew clean bootJar
 
-    - name: Build and Push Docker Image
-      uses: mr-smithers-excellent/docker-build-push@v4
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
       with:
-        image: ibtissem1234/sprinproject
-        registry: docker.io
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-  # Deploy
-  deploy:
-    needs: build-java
-    runs-on: ubuntu-latest
+    - name: Build Docker image
+      run: docker build -t ibtissem1234/sprinproject .
 
-    steps:
-    - name: Deploy to server via SSH
-      uses: appleboy/ssh-action@v1
+    - name: Push Docker image
+      run: docker push ibtissem1234/sprinproject
+
+    - name: Set up kubeconfig
+      run: echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
+
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v3
       with:
-        host: ${{ secrets.SERVER_HOST }}
-        username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SERVER_SSH_KEY }}
-        script: |
-          docker pull ibtissem1234/sprinproject:latest
-          docker stop app || true
-          docker rm app || true
-          docker run -d --name app -p 8080:8080 ibtissem1234/sprinproject:latest
+        version: 'v1.28.0'
+
+    - name: Apply K8s manifests
+      run: kubectl apply -f k8s/deployment.yaml
