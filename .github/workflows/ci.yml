@@ -41,6 +41,8 @@ jobs:
       run: docker push ibtissem1234/sprinproject
 
     - name: Set up kubeconfig
+      run: |
+        mkdir -p $HOME/.kube
       run: echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
 
     - name: Install kubectl
